@@ -1,0 +1,8 @@
+version: "3.4"
+services:
+  demo:
+    build: .
+    volumes:
+      - ./tmp:/app/tmp/:delegated
+    ports:
+      - "80:80"
