@@ -11,18 +11,51 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\PaymentRepository;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=PaymentRepository::class)
+ */
 class Payment
 {
-    /** @var string */
-    protected $userId;
-    /** @var int */
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $userId;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     protected $timestamp;
+
+    /**
+     * @ORM\Column(type="string", length=2)
+     */
     /** @var string */
     protected $country;
-    /** @var string */
+
+    /**
+     * @ORM\Column(type="string", length=3)
+     */
     protected $currency;
-    /** @var int */
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     protected $amount;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function __construct(string $userId, int $timestamp, string $country, string $currency, int $amount)
     {

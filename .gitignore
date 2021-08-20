@@ -3,3 +3,5 @@
 /var/
 /vendor/
 /tmp/
+/.php-cs-fixer.cache
+/docker-compose.override.yml

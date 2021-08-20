@@ -29,13 +29,23 @@ ENV GROUP=daemon
 ENV APACHE_DOCUMENT_ROOT=/app/public
 ENV APACHE_PORT=80
 
-#RUN docker-php-ext-install soap opcache
+RUN apt-get update
+
+# Install Postgre PDO
+RUN apt-get install -y libpq-dev \
+    postgresql-client \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
+
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 COPY --from=php_dependencies /app/vendor/ /app/vendor/
 COPY . /app
 
 RUN chown -R $USER:$GROUP $APACHE_DOCUMENT_ROOT
+
+COPY docker/demo/run-scripts.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
 
 RUN sed -ri -e 's!Listen 80!Listen ${APACHE_PORT}!g' /etc/apache2/ports.conf \
     && sed -ri -e 's!:80!:${APACHE_PORT}!g' /etc/apache2/sites-available/*.conf \
@@ -48,4 +58,6 @@ EXPOSE $APACHE_PORT
 
 FROM development AS production
 
-COPY docker/php/production.ini $PHP_INI_DIR/conf.d/mijnoverheid.ini
+COPY docker/demo/production.ini $PHP_INI_DIR/conf.d/demo.ini
+
+ENTRYPOINT docker-entrypoint

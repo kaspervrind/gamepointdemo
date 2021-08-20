@@ -9,12 +9,12 @@ Gamepoint
 
 ## Installation
 Clone the project into a folder:
-```
+```bash
 $ git clone https://github.com/kaspervrind/gamepointdemo.git
 ```
 
 Start the application (as a deamon proces `-d`):
-```
+```bash
 $ docker-compose up -d
 ```
 
@@ -23,8 +23,7 @@ $ docker-compose up -d
 ## Service 1: Import the CSV data
 1. Copy the csv data to the `tmp` folder in the project
 2. Import the data with:
-
-```
+```bash
 $ docker-compose exec demo /app/bin/console app:import-payment-data /app/tmp/[ your CSV data file]
 ```
 

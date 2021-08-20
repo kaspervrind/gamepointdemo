@@ -12,25 +12,29 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Payment;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class ImportPaymentDataCommand extends Command
 {
-    /** @var SerializerInterface */
-    protected $serializer;
+    protected const FILE_FOLDER = '/app/tmp/';
+    protected const COMMIT_THRESHOLD = 1000;
 
-    public function __construct(SerializerInterface $serializer)
+    protected DenormalizerInterface $denormalizer;
+    protected EntityManagerInterface $entityManager;
+
+    public function __construct(DenormalizerInterface $denormalizer, EntityManagerInterface $entityManager)
     {
         parent::__construct('app:import-payment-data');
-        $this->serializer = $serializer;
+
+        $this->denormalizer = $denormalizer;
+        $this->entityManager = $entityManager;
     }
 
     protected function configure(): void
@@ -39,34 +43,84 @@ class ImportPaymentDataCommand extends Command
             // the short description shown while running "php bin/console list"
             ->setDescription('Import payment data from a csv file')
             ->addArgument('filename', InputArgument::REQUIRED, 'Name and location of the filename')
-            ->addOption('overwrite', 'o', InputOption::VALUE_OPTIONAL ,'Does the current data needs to be overwritten', false)
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $filename = $input->getArgument('filename');
+        $style = new SymfonyStyle($input, $output);
+        $style->title('Importing payment data into the database');
 
-        if (!file_exists($filename) || !is_readable($filename)) {
-            throw new FileNotFoundException(sprintf('File [%s] not found', $filename));
+        $fileObject = new \SplFileObject(self::FILE_FOLDER . $input->getArgument('filename'), 'r');
+
+        if (!$fileObject->isFile() || !$fileObject->isReadable()) {
+            $style->error(sprintf('File [%s] not found', $fileObject->getFilename()));
+            return Command::FAILURE;
         }
 
-        $output->writeln(sprintf('Importing file [%s]', $filename));
-
-        /** @var ObjectNormalizer $paymentData */
-        $paymentData = file_get_contents($filename);
-        if($paymentData === null)
+        $overwrite = $style->ask('Overwrite current data?', 'true');
+        if ($overwrite === 'true')
         {
-            throw new \RuntimeException(sprintf('File [%s] is empty', $filename));
+            $style->writeln('Clearing current data ');
+            $this->entityManager
+                ->getRepository(Payment::class)
+                ->clearPayments()
+            ;
         }
 
-        $payments = $this->serializer->deserialize($paymentData, Payment::class, CsvEncoder::FORMAT);
-        foreach ($payments as $payment) {
+        $style->info(sprintf('Importing file [%s]', $fileObject->getFilename()));
 
+        try {
+            $this->importPaymentData($style, $fileObject);
+        } catch (\Throwable $e) {
+            $style->error($e->getMessage());
+            return Command::FAILURE;
         }
 
-        $output->writeln('Importing finished!');
+        $style->info('Importing finished!');
 
         return Command::SUCCESS;
+    }
+
+    protected function importPaymentData(SymfonyStyle $style, \SplFileObject $file): void
+    {
+        $headers = $file->current();
+        if (!$headers){
+            throw new \RuntimeException('File is empty');
+        }
+
+        $lineNumber = 0;
+        $file->next();
+
+        // Iterate over every line of the file
+        while (!$file->eof()) {
+            $values = $file->current();
+
+            //empty line
+            if (empty($values)){
+                continue;
+            }
+
+            $payment = $this->denormalizer->denormalize(
+                array_combine(
+                    str_getcsv($headers), str_getcsv($values)
+                ),
+                Payment::class,
+                CsvEncoder::FORMAT
+            );
+            $this->entityManager->persist($payment);
+
+            // flush the entries when the threshold is met.
+            if ($lineNumber % self::COMMIT_THRESHOLD === 0) {
+                $this->entityManager->flush();
+            }
+
+            // Increase the current line
+            $lineNumber++;
+            $file->next();
+        }
+
+        $style->info(sprintf('%d lines imported.', $lineNumber));
+        $this->entityManager->flush();
     }
 }
