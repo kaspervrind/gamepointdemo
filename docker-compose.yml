@@ -8,8 +8,9 @@ services:
       - "80:80"
     environment:
       - DATABASE_URL
-    depends_on:
-      - db
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
 
   db:
     image: postgres

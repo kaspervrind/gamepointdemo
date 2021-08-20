@@ -46,6 +46,7 @@ RUN chown -R $USER:$GROUP $APACHE_DOCUMENT_ROOT
 
 COPY docker/demo/run-scripts.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
+RUN chmod +x /app/docker/*/*.sh
 
 RUN sed -ri -e 's!Listen 80!Listen ${APACHE_PORT}!g' /etc/apache2/ports.conf \
     && sed -ri -e 's!:80!:${APACHE_PORT}!g' /etc/apache2/sites-available/*.conf \

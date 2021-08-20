@@ -24,13 +24,16 @@ $ docker-compose up -d
 1. Copy the csv data to the `tmp` folder in the project
 2. Import the data with:
 ```bash
-$ docker-compose exec demo /app/bin/console app:import-payment-data /app/tmp/[ your CSV data file]
+$ docker-compose exec demo /app/bin/console app:import-payment-data [ your CSV data file]
 ```
 
-Default will the current data be overwritten
-
-
 ## Export the database content
+To export the database to an database dump run:
+```bash
+docker-compose exec demo /app/docker/demo/dump-database.sh
+```
+
+The postgres dump will be exported to the file `tmp/dump.sql`
 
 ## Service 2: Show the data
 Open the page http://localhost in your browser
