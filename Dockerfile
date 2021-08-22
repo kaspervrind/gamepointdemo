@@ -44,6 +44,9 @@ COPY . /app
 
 RUN chown -R $USER:$GROUP $APACHE_DOCUMENT_ROOT
 
+RUN mkdir -p /app/var
+RUN chown -R $USER:$GROUP /app/var
+
 COPY docker/demo/run-scripts.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 RUN chmod +x /app/docker/*/*.sh
