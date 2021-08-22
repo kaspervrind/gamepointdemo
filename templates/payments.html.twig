@@ -5,6 +5,15 @@
 {% endblock %}
 
 {% block container %}
+
+{% if not revenue_per_currency %}
+    <div class="row">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">No data imported!</h4>
+            <p>Read the readme.md for instructions</p>
+        </div>
+    </div>
+{% endif %}
 <div class="row">
     <h2>Total revenue per currency</h2>
     <table class="table table-striped table-hover">

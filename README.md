@@ -55,9 +55,29 @@ The front-end can use some love. The twig template is not really modular.
 TODO: implement https://github.com/florianv/symfony-swap for importing the conversions.
 I was out of time, so I couldn't do this anymore. The fixture is there but using it in a container takes some more effort.
 
+---
+
+## Folders
+I couldn't separate the files into 2 folders because I used the Symfony framework so here is a list of files used for the 2 assignments:
+
+Assignment 1 import the data:
+* src/Command/ImportPaymentDataCommand.php
+* src/Entity/Payment.php
+* src/Serializer/PaymentDenormalizer.php
+* config/services.yaml
+
+Assignment 2 display the data:
+* src/Controller/PaymentController.php
+* src/Entity/Payment.php
+* src/Repository/PaymentRepository.php
+* templates/base.html.twig
+* templates/payments.html.twig
+
 This project is for demonstration purposes only 😀
 
 ---
+
+
 
 ## Assignment
 The provided CSV file "payments.csv" contains payments made by a variety of users, in a variety of countries.
