@@ -56,4 +56,11 @@ class CurrencyConversion
     {
         return $this->rate;
     }
+
+    public function setRate(float $rate): self
+    {
+        $this->rate = $rate;
+
+        return $this;
+    }
 }

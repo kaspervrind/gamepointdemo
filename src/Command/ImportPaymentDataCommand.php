@@ -51,7 +51,7 @@ class ImportPaymentDataCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $style->title('Importing payment data into the database');
 
-        $file = self::FILE_FOLDER . $input->getArgument('filename');
+        $file = self::FILE_FOLDER.$input->getArgument('filename');
         if (!file_exists($file) || !is_readable($file)) {
             $style->error(sprintf('File [%s] not found', $file));
 
@@ -87,8 +87,8 @@ class ImportPaymentDataCommand extends Command
     protected function importPaymentData(SymfonyStyle $style, \SplFileObject $file): void
     {
         // progress bar
-        $file->seek(PHP_INT_MAX);
-        $progressBar = $style->createProgressBar($file->key()-1);
+        $file->seek(\PHP_INT_MAX);
+        $progressBar = $style->createProgressBar($file->key() - 1);
         $file->rewind();
 
         $headers = $file->current();

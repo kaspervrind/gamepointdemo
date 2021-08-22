@@ -38,6 +38,11 @@ The postgres dump will be exported to the file `tmp/dump.sql`
 ## Service 2: Show the data
 Open the page http://localhost in your browser
 
+## Bonus: get the exchange rates from a public API
+```bash
+docker-compose exec demo /app/bin/console app:update-exchange-rates 
+```
+
 ---
 
 ## Notes
@@ -51,9 +56,6 @@ I'm more of a Nginx fan but it was a small test to use apache again.
 I wanted to move apache out of the demo container and put it in a reverse proxy but skipped this due to time.
 
 The front-end can use some love. The twig template is not really modular.
-
-TODO: implement https://github.com/florianv/symfony-swap for importing the conversions.
-I was out of time, so I couldn't do this anymore. The fixture is there but using it in a container takes some more effort.
 
 ---
 
@@ -73,7 +75,13 @@ Assignment 2 display the data:
 * templates/base.html.twig
 * templates/payments.html.twig
 
-This project is for demonstration purposes only 😀
+Bonus: Exchange rate fetched from Public API / composer package.
+* src/Command/UpdateExchangeRatesCommand.php
+* src/DataFixtures/CurrencyConversionFixture.php
+* src/Repository/CurrencyConversionRepository.php
+* config/services.yaml
+
+**This project is for demonstration purposes only 😀**
 
 ---
 

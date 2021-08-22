@@ -15,14 +15,14 @@ class CurrencyConversionTest extends TestCase
 {
     protected string $source;
     protected string $target;
-    protected int $rate;
+    protected float $rate;
     protected CurrencyConversion $conversion;
 
     protected function setUp(): void
     {
         $this->source = (string) mt_rand();
         $this->target = (string) mt_rand();
-        $this->rate = mt_rand();
+        $this->rate = (float) mt_rand();
 
         $this->conversion = new CurrencyConversion(
             $this->source,
@@ -53,5 +53,19 @@ class CurrencyConversionTest extends TestCase
     public function testGetSource(): void
     {
         self::assertSame($this->source, $this->conversion->getSource());
+    }
+
+    /**
+     * @covers ::setRate
+     */
+    public function testSetRate(): void
+    {
+        $rate = (float) mt_rand();
+
+        $property = new \ReflectionProperty($this->conversion, 'rate');
+        $property->setAccessible(true);
+
+        self::assertSame($this->conversion, $this->conversion->setRate($rate));
+        self::assertSame($rate, $property->getValue($this->conversion));
     }
 }

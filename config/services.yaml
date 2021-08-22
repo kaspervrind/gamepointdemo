@@ -31,3 +31,11 @@ services:
 
     App\Controller\PaymentController:
         public: true
+
+    Swap\Swap:
+        alias: "florianv_swap.swap"
+
+florianv_swap:
+    providers:
+        currency_converter:
+            access_key: "%env(API_ACCESS_KEY)%"
