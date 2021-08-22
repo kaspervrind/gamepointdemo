@@ -2,20 +2,20 @@ Gamepoint
 ======
 
 ## Requirements
-- Git 
-- Docker
+- Git https://git-scm.com/
+- Docker https://www.docker.com/
 
 ---
 
 ## Installation
 Clone the project into a folder:
 ```bash
-$ git clone https://github.com/kaspervrind/gamepointdemo.git
+git clone https://github.com/kaspervrind/gamepointdemo.git
 ```
 
 Start the application (as a deamon proces `-d`):
 ```bash
-$ docker-compose up -d
+docker-compose up -d
 ```
 
 ---
@@ -24,7 +24,7 @@ $ docker-compose up -d
 1. Copy the csv data to the `tmp` folder in the project
 2. Import the data with:
 ```bash
-$ docker-compose exec demo /app/bin/console app:import-payment-data [ your CSV data file]
+docker-compose exec demo /app/bin/console app:import-payment-data [ your CSV data file]
 ```
 
 ## Export the database content
@@ -38,9 +38,22 @@ The postgres dump will be exported to the file `tmp/dump.sql`
 ## Service 2: Show the data
 Open the page http://localhost in your browser
 
-
 ---
 
+## Notes
+The test coverage is not complete and is missing application tests. I have done this assignment in my spare time wich is scarce.
+I wanted to challenge myself so I used postgres as a database.
+I've used MySQL, MariaDb, Oracle and MsSql in the past so it was fun to experiment with a different kind of database.
+
+The docker demo container is not finished, it needs hardening and some more love but it performs.
+I'm more of a Nginx fan but it was a small test to use apache again.
+I wanted to move apache out of the demo container and put it in a reverse proxy but skipped this due to time.
+
+The front-end can use some love. The twig template is not really modular.
+
+This project is for demonstration purposes only 😀
+
+---
 
 ## Assignment
 The provided CSV file "payments.csv" contains payments made by a variety of users, in a variety of countries.
@@ -55,7 +68,7 @@ Create a PHP script which queries this table, retrieves it's contents, and provi
 - Total revenue per currency
 - Total revenue per user
 - Total revenue per day
-o Non-EURcurrenciesareconvertedtoEURbasedoncurrent exchange rate. Hardcoding the exchange rates is an acceptable approach.
+- - Non-EUR currencies are converted to EUR based on current exchange rate. Hardcoding the exchange rates is an acceptable approach.
 
 ### Notes
 In your implementation, you can assume:
@@ -63,7 +76,9 @@ In your implementation, you can assume:
 - Values in the currency column conform to spec of ISO 4217 Bonus points
 - Your solution is able to be reused and / or extended for future similar / broader use cases. ( Think modular )
 - Your solution is scalable and thus can handle a CSV containing tens of thousands entries, with minimal performance loss.
-- Exchange rate fetched from Public API / composer package. Expected delivery format
+- Exchange rate fetched from Public API / composer package. 
+
+### Expected delivery format
 - Two directories, one for each service, named however you prefer. Additional directories (e.g. for a shared service) are fine.
 - A dump (.sql or alternative extension, depending on choice) for Service 1 table.
 - Feel free to add a .README for any rationales, comments or instructions. Good luck!

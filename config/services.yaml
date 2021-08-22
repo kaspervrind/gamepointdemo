@@ -28,3 +28,6 @@ services:
         public: true
         tags:
             - { name: console.command }
+
+    App\Controller\PaymentController:
+        public: true

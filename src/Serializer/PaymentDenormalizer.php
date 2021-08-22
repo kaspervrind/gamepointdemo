@@ -12,7 +12,11 @@ class PaymentDenormalizer implements DenormalizerInterface
     public function denormalize($data, string $type, string $format = null, array $context = []): Payment
     {
         $columns = ['UserID', 'UnixTimestamp', 'Country', 'Currency', 'AmountInCents'];
-        if (array_keys($data) !== $columns){
+        if (!\is_array($data)) {
+            throw new \RuntimeException('No array data provided');
+        }
+
+        if (array_keys($data) !== $columns) {
             throw new \RuntimeException(sprintf('File contains an invalid set of columns. Format [%s]', implode(',', $columns)));
         }
 

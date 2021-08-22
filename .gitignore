@@ -4,4 +4,7 @@
 /vendor/
 /tmp/
 /.php-cs-fixer.cache
+/tools/.php-cs-fixer.cache
 /docker-compose.override.yml
+.phpunit.result.cache
+/phpunit.xml

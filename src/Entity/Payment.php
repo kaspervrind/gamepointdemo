@@ -24,38 +24,32 @@ class Payment
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    protected $id;
+    protected ?int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $userId;
+    private string $userId;
 
     /**
      * @ORM\Column(type="integer")
      */
-    protected $timestamp;
+    protected int $timestamp;
 
     /**
      * @ORM\Column(type="string", length=2)
      */
-    /** @var string */
-    protected $country;
+    protected string $country;
 
     /**
      * @ORM\Column(type="string", length=3)
      */
-    protected $currency;
+    protected string $currency;
 
     /**
      * @ORM\Column(type="integer")
      */
-    protected $amount;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    protected int $amount;
 
     public function __construct(string $userId, int $timestamp, string $country, string $currency, int $amount)
     {
@@ -89,5 +83,17 @@ class Payment
     public function getAmount(): int
     {
         return $this->amount;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

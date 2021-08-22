@@ -51,16 +51,16 @@ class ImportPaymentDataCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $style->title('Importing payment data into the database');
 
-        $fileObject = new \SplFileObject(self::FILE_FOLDER . $input->getArgument('filename'), 'r');
+        $fileObject = new \SplFileObject(self::FILE_FOLDER.$input->getArgument('filename'), 'r');
 
         if (!$fileObject->isFile() || !$fileObject->isReadable()) {
             $style->error(sprintf('File [%s] not found', $fileObject->getFilename()));
+
             return Command::FAILURE;
         }
 
         $overwrite = $style->ask('Overwrite current data?', 'true');
-        if ($overwrite === 'true')
-        {
+        if ('true' === $overwrite) {
             $style->writeln('Clearing current data ');
             $this->entityManager
                 ->getRepository(Payment::class)
@@ -74,6 +74,7 @@ class ImportPaymentDataCommand extends Command
             $this->importPaymentData($style, $fileObject);
         } catch (\Throwable $e) {
             $style->error($e->getMessage());
+
             return Command::FAILURE;
         }
 
@@ -85,7 +86,7 @@ class ImportPaymentDataCommand extends Command
     protected function importPaymentData(SymfonyStyle $style, \SplFileObject $file): void
     {
         $headers = $file->current();
-        if (!$headers){
+        if (!$headers) {
             throw new \RuntimeException('File is empty');
         }
 
@@ -97,7 +98,7 @@ class ImportPaymentDataCommand extends Command
             $values = $file->current();
 
             //empty line
-            if (empty($values)){
+            if (empty($values)) {
                 continue;
             }
 
@@ -111,12 +112,12 @@ class ImportPaymentDataCommand extends Command
             $this->entityManager->persist($payment);
 
             // flush the entries when the threshold is met.
-            if ($lineNumber % self::COMMIT_THRESHOLD === 0) {
+            if (0 === $lineNumber % self::COMMIT_THRESHOLD) {
                 $this->entityManager->flush();
             }
 
             // Increase the current line
-            $lineNumber++;
+            ++$lineNumber;
             $file->next();
         }
 
