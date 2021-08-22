@@ -42,8 +42,9 @@ Open the page http://localhost in your browser
 
 ## Notes
 The test coverage is not complete and is missing application tests. I have done this assignment in my spare time wich is scarce.
-I wanted to challenge myself so I used postgres as a database.
-I've used MySQL, MariaDb, Oracle and MsSql in the past so it was fun to experiment with a different kind of database.
+I wanted to challenge myself, so I used postgres as a database.
+I've used MySQL, MariaDb, Oracle and MsSql in the past, so it was fun to experiment with a different kind of database.
+Same for PHP 8, I haven't used it for work, but it's great 🚀
 
 The docker demo container is not finished, it needs hardening and some more love but it performs.
 I'm more of a Nginx fan but it was a small test to use apache again.
