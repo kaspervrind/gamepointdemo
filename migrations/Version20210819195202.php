@@ -18,7 +18,7 @@ final class Version20210819195202 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SEQUENCE payment_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE payment (id INT NOT NULL, user_id VARCHAR(255) NOT NULL, timestamp INT NOT NULL, currency VARCHAR(3) NOT NULL, amount INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE payment (id INT NOT NULL, user_id VARCHAR(255) NOT NULL, timestamp INT NOT NULL, country VARCHAR(2), currency VARCHAR(3) NOT NULL, amount INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX user_time_currency ON payment (user_id, timestamp, currency)');
     }
 
