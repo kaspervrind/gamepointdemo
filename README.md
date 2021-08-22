@@ -52,6 +52,9 @@ I wanted to move apache out of the demo container and put it in a reverse proxy 
 
 The front-end can use some love. The twig template is not really modular.
 
+TODO: implement https://github.com/florianv/symfony-swap for importing the conversions.
+I was out of time, so I couldn't do this anymore. The fixture is there but using it in a container takes some more effort.
+
 This project is for demonstration purposes only 😀
 
 ---
