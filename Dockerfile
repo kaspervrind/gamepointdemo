@@ -7,19 +7,14 @@ COPY composer.json composer.lock* /app/
 RUN composer install \
     --ignore-platform-reqs \
     --no-interaction \
-    --no-plugins \
     --prefer-dist \
-    --no-dev \
-    --classmap-authoritative
+    --no-progress
 
 COPY . .
 
 RUN composer dump-autoload \
-    --no-scripts \
     --optimize \
-    --no-dev \
     --no-interaction \
-    --no-plugins \
     --classmap-authoritative
 
 FROM php:8.0-apache AS development
