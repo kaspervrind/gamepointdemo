@@ -51,13 +51,14 @@ class ImportPaymentDataCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $style->title('Importing payment data into the database');
 
-        $fileObject = new \SplFileObject(self::FILE_FOLDER.$input->getArgument('filename'), 'r');
-
-        if (!$fileObject->isFile() || !$fileObject->isReadable()) {
-            $style->error(sprintf('File [%s] not found', $fileObject->getFilename()));
+        $file = self::FILE_FOLDER . $input->getArgument('filename');
+        if (!file_exists($file) || !is_readable($file)) {
+            $style->error(sprintf('File [%s] not found', $file));
 
             return Command::FAILURE;
         }
+
+        $fileObject = new \SplFileObject($file, 'r');
 
         $overwrite = $style->ask('Overwrite current data?', 'true');
         if ('true' === $overwrite) {
@@ -85,6 +86,11 @@ class ImportPaymentDataCommand extends Command
 
     protected function importPaymentData(SymfonyStyle $style, \SplFileObject $file): void
     {
+        // progress bar
+        $file->seek(PHP_INT_MAX);
+        $progressBar = $style->createProgressBar($file->key()-1);
+        $file->rewind();
+
         $headers = $file->current();
         if (!$headers) {
             throw new \RuntimeException('File is empty');
@@ -93,6 +99,7 @@ class ImportPaymentDataCommand extends Command
         $lineNumber = 0;
         $file->next();
 
+        $progressBar->start();
         // Iterate over every line of the file
         while (!$file->eof()) {
             $values = $file->current();
@@ -118,10 +125,13 @@ class ImportPaymentDataCommand extends Command
 
             // Increase the current line
             ++$lineNumber;
+            $progressBar->advance();
             $file->next();
         }
 
-        $style->info(sprintf('%d lines imported.', $lineNumber));
+        $progressBar->finish();
         $this->entityManager->flush();
+
+        $style->info(sprintf('%d lines imported.', $lineNumber));
     }
 }
